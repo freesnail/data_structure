@@ -1,15 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "ring_buffer.h"
 
-//definition of ring buffer
-typedef struct ring_buffer{
-	char *buffer;      //buffer to store the data
-	int in_pos;	   //flag to track the input pointer
-	int out_pos;       //flag to track the output point
-	int size;	   //buffer size
-	int data_num;	   //the used buffer size
-}rbuffer;
 
 
 int init_ring_buffer(rbuffer * rbuf, int size) //init buffer
@@ -22,7 +15,7 @@ int init_ring_buffer(rbuffer * rbuf, int size) //init buffer
 
 	rbuf->in_pos = 0;
 	rbuf->out_pos = 0;
-	rbuf->data_num = 0
+	rbuf->data_num = 0;
 	rbuf->size = size;
 	
 	return 0;
@@ -33,9 +26,9 @@ rbuffer *input_data(rbuffer *rbuf, char *buf, int len) //input data
 	if(len <= 0)
 		return rbuf;
 
-	if(len < rbuf->size - rbuf->in_pos){
+	if(len <= rbuf->size - rbuf->in_pos){
 		memcpy(rbuf->buffer + rbuf->in_pos, buf, len);
-		rbuf->in_pos += len;
+		rbuf->in_pos = (rbuf->in_pos + len) % rbuf->size;
 	}
 	else{
 		memcpy(rbuf->buffer + rbuf->in_pos, buf, rbuf->size - rbuf->in_pos);
@@ -57,9 +50,9 @@ rbuffer *output_data(rbuffer *rbuf, char *buf, int len)  //out put data
 		printf("No enough data!\n");
 		return rbuf;
 	}
-	if(len < rbuf->size - rbuf->out_pos){
+	if(len <= rbuf->size - rbuf->out_pos){
 		memcpy(buf, rbuf->buffer + rbuf->out_pos, len);
-		rbuf->out_pos += len;
+		rbuf->out_pos = (rbuf->out_pos + len) % rbuf->size;
 	}	
 	else{
 		memcpy(buf, rbuf->buffer + rbuf->out_pos, rbuf->size - rbuf->out_pos);
@@ -80,7 +73,7 @@ void show_buf(char *buf, int num)
 	}
 	printf("\n");
 }
-
+#if 0
 int main()
 {
 	int ret;
@@ -110,3 +103,4 @@ int main()
 
 	return 0;
 }
+#endif

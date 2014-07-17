@@ -13,7 +13,6 @@ Node * create_list(int len) //crerte a list with the given length
 {
 	Node *head, *p, *s;
 	int x;
-	int cycle = 1;
 	head = (Node *)malloc(sizeof(Node));
 	p = head;
 	while(len--){
@@ -44,12 +43,15 @@ int list_lenth(Node *head)  //calculate the length of the list
 int show_list(Node *head)  //print each data of the list
 {
 	Node *p;
+	p = (Node *)malloc(sizeof(Node));
 	p = head;
+
 	printf("list data:\n");
 	while(p){
 		printf("%d\n", p->data);
 		p = p->next;
 	}
+
 	return 0;
 }
 
